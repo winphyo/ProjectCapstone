@@ -14,24 +14,24 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createProduct, deleteProduct, getProducts, patchProduct } from '../api/todos-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { Product } from '../types/Product'
 
 interface TodosProps {
   auth: Auth
   history: History
 }
 
-interface TodosState {
-  todos: Todo[]
+interface ProductState {
+  products: Product[]
   newTodoName: string
   loadingTodos: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
-  state: TodosState = {
-    todos: [],
+export class Todos extends React.PureComponent<TodosProps, ProductState> {
+  state: ProductState = {
+    products: [],
     newTodoName: '',
     loadingTodos: true
   }
@@ -40,71 +40,73 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     this.setState({ newTodoName: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (productId: string) => {
+    this.props.history.push(`/products/${productId}/edit`)
   }
 
   onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
+      const description =   this.getProductDescription()
+      const newProduct = await createProduct(this.props.auth.getIdToken(), {
         name: this.state.newTodoName,
-        dueDate
+        description
       })
       this.setState({
-        todos: [...this.state.todos, newTodo],
+        products: [...this.state.products, newProduct],
         newTodoName: ''
       })
-    } catch {
-      alert('Todo creation failed')
+
+      this.componentDidMount()
+    } catch (e) {
+      alert(`Product Creation Failed: ${e.message}`)
+      console.log(e) 
     }
   }
 
-  onTodoDelete = async (todoId: string) => {
+  onTodoDelete = async (productId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteProduct(this.props.auth.getIdToken(), productId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId != todoId)
+        products: this.state.products.filter(todo => todo.productId != productId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Product deletion failed')
     }
   }
 
   onTodoCheck = async (pos: number) => {
     try {
-      const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
+      const todo = this.state.products[pos]
+      await patchProduct(this.props.auth.getIdToken(), todo.productId, {
         name: todo.name,
-        dueDate: todo.dueDate,
-        done: !todo.done
+        dueDate: todo.description,
+        done: !todo.available
       })
       this.setState({
-        todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
+        products: update(this.state.products, {
+          [pos]: { available: { $set: !todo.available } }
         })
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('product deletion failed')
     }
   }
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
-      this.setState({
-        todos,
+      const products = await getProducts(this.props.auth.getIdToken())
+      this.setState({ products,
         loadingTodos: false
       })
     } catch (e) {
-      alert(`Failed to fetch todos: ${e.message}`)
+      alert(`Failed to fetch product: ${e.message}`)
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Product Catalogue Entry</Header>
 
         {this.renderCreateTodoInput()}
 
@@ -122,12 +124,12 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New task',
+              content: 'New Product',
               onClick: this.onTodoCreate
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Add New Product..."
             onChange={this.handleNameChange}
           />
         </Grid.Column>
@@ -150,7 +152,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading Product
         </Loader>
       </Grid.Row>
     )
@@ -159,26 +161,26 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   renderTodosList() {
     return (
       <Grid padded>
-        {this.state.todos.map((todo, pos) => {
+        {this.state.products.map((todo, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
+            <Grid.Row key={todo.productId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
+                  checked={todo.available}
                 />
               </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={5} verticalAlign="middle">
                 {todo.name}
               </Grid.Column>
-              <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+              <Grid.Column width={8} floated="right">
+                {todo.description}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
+                  onClick={() => this.onEditButtonClick(todo.productId)}
                 >
                   <Icon name="pencil" />
                 </Button>
@@ -187,7 +189,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 <Button
                   icon
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
+                  onClick={() => this.onTodoDelete(todo.productId)}
                 >
                   <Icon name="delete" />
                 </Button>
@@ -203,6 +205,23 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         })}
       </Grid>
     )
+  }
+
+  getProductDescription(): string {
+
+    var textArray = [
+      'A baked or cooked food that is typically small, flat and sweet',
+      'Dairy product made from the fat and protein components of milk or cream',
+      'Fresh Water from Mount Popa',
+      'A Locally produce product',
+      'Natural cholesterol lowering Medicie',
+      'Medicine to cure the pain',
+      'Mi Air Purifier',
+      'Kithch tools',
+      'Clitoria ternatea, commonly known as Asian pigeonwings, bluebellvine, blue pea'
+  ];
+      var randomNumber = Math.floor(Math.random()*textArray.length);
+      return textArray[randomNumber] as string
   }
 
   calculateDueDate(): string {

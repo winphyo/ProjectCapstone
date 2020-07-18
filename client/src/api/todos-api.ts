@@ -1,41 +1,54 @@
 import { apiEndpoint } from '../config'
-import { Todo } from '../types/Todo';
-import { CreateTodoRequest } from '../types/CreateTodoRequest';
+import { Product } from '../types/Product'
+import { CreateProductRequest } from '../types/CreateProductRequest';
 import Axios from 'axios'
-import { UpdateTodoRequest } from '../types/UpdateTodoRequest';
+import { UpdateproductRequest } from '../types/UpdateproductRequest';
 
-export async function getTodos(idToken: string): Promise<Todo[]> {
-  console.log('Fetching todos')
+export async function getProducts(idToken: string): Promise<Product[]> {
+  console.log('Fetching product')
 
-  const response = await Axios.get(`${apiEndpoint}/todos`, {
+  const response = await Axios.get(`${apiEndpoint}/products`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     },
   })
-  console.log('Todos:', response.data)
+  console.log('products:', response.data)
   return response.data.items
 }
 
-export async function createTodo(
+export async function createProduct(
   idToken: string,
-  newTodo: CreateTodoRequest
-): Promise<Todo> {
-  const response = await Axios.post(`${apiEndpoint}/todos`,  JSON.stringify(newTodo), {
+  products: CreateProductRequest
+): Promise<Product> {
+  const response = await Axios.post(`${apiEndpoint}/products`,  JSON.stringify(products), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     }
   })
-  return response.data.item
+  console.log('product created:', response.data)
+  //return productslist.data.item
+
+  console.log('Fetching product')
+
+  const responseNew = await Axios.get(`${apiEndpoint}/products`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
+  })
+  console.log('products:', responseNew.data)
+  return responseNew.data.items
+
 }
 
-export async function patchTodo(
+export async function patchProduct(
   idToken: string,
-  todoId: string,
-  updatedTodo: UpdateTodoRequest
+  productId: string,
+  updateProduct: UpdateproductRequest
 ): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/todos/${todoId}`, JSON.stringify(updatedTodo), {
+  await Axios.patch(`${apiEndpoint}/products/${productId}`, JSON.stringify(updateProduct), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -43,11 +56,11 @@ export async function patchTodo(
   })
 }
 
-export async function deleteTodo(
+export async function deleteProduct(
   idToken: string,
-  todoId: string
+  productId: string
 ): Promise<void> {
-  await Axios.delete(`${apiEndpoint}/todos/${todoId}`, {
+  await Axios.delete(`${apiEndpoint}/products/${productId}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -57,9 +70,9 @@ export async function deleteTodo(
 
 export async function getUploadUrl(
   idToken: string,
-  todoId: string
+  productId: string
 ): Promise<string> {
-  const response = await Axios.post(`${apiEndpoint}/todos/${todoId}/attachment`, '', {
+  const response = await Axios.post(`${apiEndpoint}/products/${productId}/attachment`, '', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`

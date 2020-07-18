@@ -1,6 +1,6 @@
 ---
   service:
-    name: serverless-todo-app
+    name: serverless-product-app
   plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
@@ -11,9 +11,9 @@
     stage: "${opt:stage, 'dev'}"
     region: "${opt:region, 'us-east-1'}"
     environment:
-      TODO_TABLE: todo-${self:provider.stage}
+      product_TABLE: product-${self:provider.stage}
       INDEX_NAME: byUserIdIndex
-      TODOITEM_S3_BUCKET_NAME: todo-attachments-${self:provider.stage}
+      productITEM_S3_BUCKET_NAME: product-attachments-${self:provider.stage}
       SIGNED_URL_EXPIRATION: 300
     iamRoleStatements:
     - Effect: Allow
@@ -21,51 +21,52 @@
       - dynamodb:Scan
       - dynamodb:PutItem
       - dynamodb:GetItem
+      - dynamodb:UpdateItem
       - dynamodb:Query
       - dynamodb:DeleteItem
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.product_TABLE}
     - Effect: Allow
       Action:
       - dynamodb:Query
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}/index/${self:provider.environment.INDEX_NAME}
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.product_TABLE}/index/${self:provider.environment.INDEX_NAME}
     - Effect: Allow
       Action:
       - s3:PutObject
       - s3:GetObject
-      Resource: arn:aws:s3:::${self:provider.environment.TODOITEM_S3_BUCKET_NAME}/*
+      Resource: arn:aws:s3:::${self:provider.environment.productITEM_S3_BUCKET_NAME}/*
   functions:
     Auth:
       handler: src/lambda/auth/auth0Authorizer.handler
-    GetTodos:
-      handler: src/lambda/http/getTodos.handler
+    Getproducts:
+      handler: src/lambda/http/getproducts.handler
       events:
       - http:
           method: get
-          path: todos
+          path: products
           authorizer: Auth
           cors: true
-    CreateTodo:
-      handler: src/lambda/http/createTodo.handler
+    Createproduct:
+      handler: src/lambda/http/createproduct.handler
       events:
       - http:
           method: post
-          path: todos
+          path: products
           authorizer: Auth
           cors: true
-    UpdateTodo:
-      handler: src/lambda/http/updateTodo.handler
+    Updateproduct:
+      handler: src/lambda/http/updateproduct.handler
       events:
       - http:
           method: patch
-          path: todos/{todoId}
+          path: products/{productId}
           authorizer: Auth
           cors: true
-    DeleteTodo:
-      handler: src/lambda/http/deleteTodo.handler
+    Deleteproduct:
+      handler: src/lambda/http/deleteproduct.handler
       events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: products/{productId}
           authorizer: Auth
           cors: true
     GenerateUploadUrl:
@@ -73,21 +74,21 @@
       events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: products/{productId}/attachment
           authorizer: Auth
           cors: true
   resources:
     Resources:
-      ToDoDynamoDBTable:
+      productDynamoDBTable:
         Type: AWS::DynamoDB::Table
         Properties:
           AttributeDefinitions:
-          - AttributeName: todoId
+          - AttributeName: productId
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
           KeySchema:
-          - AttributeName: todoId
+          - AttributeName: productId
             KeyType: HASH
           BillingMode: PAY_PER_REQUEST
           GlobalSecondaryIndexes:
@@ -97,12 +98,12 @@
               KeyType: HASH
             Projection:
               ProjectionType: ALL
-          TableName: "${self:provider.environment.TODO_TABLE}"
+          TableName: "${self:provider.environment.product_TABLE}"
 
       AttachmentsBucket:
         Type: AWS::S3::Bucket
         Properties:
-          BucketName: "${self:provider.environment.TODOITEM_S3_BUCKET_NAME}"
+          BucketName: "${self:provider.environment.productITEM_S3_BUCKET_NAME}"
           CorsConfiguration: 
             CorsRules:
             - AllowedOrigins:
@@ -127,5 +128,5 @@
               Effect: Allow
               Principal: "*"
               Action: s3:GetObject
-              Resource: arn:aws:s3:::${self:provider.environment.TODOITEM_S3_BUCKET_NAME}/*
+              Resource: arn:aws:s3:::${self:provider.environment.productITEM_S3_BUCKET_NAME}/*
           Bucket: !Ref AttachmentsBucket

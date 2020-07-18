@@ -2,17 +2,17 @@ import 'source-map-support/register'
 import * as AWS  from 'aws-sdk'  //default
 import * as AWSXRay from 'aws-xray-sdk' //default
 
-const todoTable = process.env.TODO_TABLE 
+const productTable = process.env.product_TABLE 
 const XAWS = AWSXRay.captureAWS(AWS)  //default
 const docClient = new XAWS.DynamoDB.DocumentClient()  //default
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
+  const productId = event.pathParameters.productId
   console.log('Processing event: ', event)
-  await deleteTodo(todoId);
-  // TODO: Remove a TODO item by id
+  await deleteproduct(productId);
+  // product: Remove a product item by id
   return {
     statusCode: 202,
     headers: {
@@ -24,12 +24,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 }
 
 
-async function deleteTodo(todoId: string) {
-  console.log("Deleting todo:", {todoId: todoId});
+async function deleteproduct(productId: string) {
+  console.log("Deleting product:", {productId: productId});
   await docClient.delete({
-      TableName: todoTable,
+      TableName: productTable,
       Key: {
-          "todoId": todoId
+          "productId": productId
       }
   }).promise();
 }

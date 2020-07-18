@@ -10,19 +10,19 @@ const s3 = new XAWS.S3({
   signatureVersion: 'v4'
 })
 
-const todoTable = process.env.TODO_TABLE
-const bucketName = process.env.TODOITEM_S3_BUCKET_NAME
+const productTable = process.env.product_TABLE
+const bucketName = process.env.productITEM_S3_BUCKET_NAME
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 const docClient = new XAWS.DynamoDB.DocumentClient()
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
+    // product: Return a presigned URL to upload a file for a product item with the provided id
 
-  const todoId = event.pathParameters.todoId
+  const productId = event.pathParameters.productId
   console.log('Processing event: ', event)
   const imageId = uuid.v4();
   const uploadUrl = getUploadUrl(imageId)
-  await updateTodoAttachmentUrl(todoId,uploadUrl)
+  await updateproductAttachmentUrl(productId,uploadUrl)
 
   return {
     statusCode: 200,
@@ -45,12 +45,12 @@ function getUploadUrl(imageId: string) {
   })
 }
 
-async function updateTodoAttachmentUrl(todoId: string, attachmentUrl: string){
+async function updateproductAttachmentUrl(productId: string, attachmentUrl: string){
   console.log('Storing new item: ', attachmentUrl)
    docClient.update({
-      TableName: todoTable,
+      TableName: productTable,
       Key: {
-          "todoId": todoId
+          "productId": productId
       },
       UpdateExpression: "set attachmentUrl = :attachmentUrl",
       ExpressionAttributeValues: {

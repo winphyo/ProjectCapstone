@@ -3,21 +3,21 @@ import * as AWS  from 'aws-sdk'
 
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-const todoTable = process.env.TODO_TABLE
-const todoIndex = process.env.INDEX_NAME
+const productTable = process.env.product_TABLE
+const productIndex = process.env.INDEX_NAME
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { getUserId } from '../utils'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  // TODO: Get all TODO items for a current user
+  // product: Get all product items for a current user
   console.log('Processing event: ', event)
 
   const userId= getUserId(event);
   
   const result = await docClient.query({
-    TableName: todoTable,
-    IndexName: todoIndex,
+    TableName: productTable,
+    IndexName: productIndex,
     KeyConditionExpression: 'userId = :userId',
             ExpressionAttributeValues: {
                 ':userId': userId
