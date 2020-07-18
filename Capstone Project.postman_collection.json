@@ -1,0 +1,225 @@
+{
+	"info": {
+		"_postman_id": "43a3bfaa-6aeb-40a3-899c-6c09a78439f3",
+		"name": "Capstone Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get all products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/products",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Designer Water\",\n\t\"description\": \"a refreshing taste\"\n}"
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/products",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Spiru Garlic\",\r\n\t\"available\" : \"true\",\r\n\t\"description\": \"Natural Cholestroal Lowering\"\r\n}"
+						},
+						"url": {
+							"raw": "https://82dy58msee.execute-api.us-east-1.amazonaws.com/dev/products/602461dd-42ab-4148-859e-d9b947b8640c",
+							"protocol": "https",
+							"host": [
+								"82dy58msee",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"products",
+								"602461dd-42ab-4148-859e-d9b947b8640c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://82dy58msee.execute-api.us-east-1.amazonaws.com/dev/products/8250e018-91e0-4007-8e21-acd876c04c98",
+							"protocol": "https",
+							"host": [
+								"82dy58msee",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"products",
+								"8250e018-91e0-4007-8e21-acd876c04c98"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get attachment URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/products/9976bf79-19f4-418a-bc51-2fc5ded4b8cc/attachment",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"products",
+								"9976bf79-19f4-418a-bc51-2fc5ded4b8cc",
+								"attachment"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "08cc1db0-8d79-4a65-a1ac-e73324397426",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c59e7d1f-1abf-4cff-8127-ad782cb67dff",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "aa4fdb89-2337-42e9-9154-a61638adce30",
+			"key": "apiId",
+			"value": "82dy58msee",
+			"type": "string"
+		},
+		{
+			"id": "e04b5237-0f8a-4ecb-9826-1a51f3fe59fa",
+			"key": "authToken",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik9FRTJNRU5ETlRrMVFqUXhRalpCUmpKRk5qUTRNalJHTVROQ05EZ3pSVVJFTWpaQ1JEQXhOZyJ9.eyJpc3MiOiJodHRwczovL3dpbnBoeW90aGVpbi5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDk0MjU5ODkxMzE4OTIwNTY1MDkiLCJhdWQiOiI5Y0ZnY0F5ZUVMRFM3S0JOS1BuOFA4ckZUNWRsem5haCIsImlhdCI6MTU5NTAwMzQxNywiZXhwIjoxNTk1NDM1NDE2LCJhdF9oYXNoIjoicE9GTm1UaUJlbFRXOTBfbHNLb25oQSIsIm5vbmNlIjoiX2Rxb3I0b3hPRGQybWJpWHBsQUdxYV9xS1R1RjhCSFkifQ.YgerSPcqYkv2No4liyOuI5-1WINf0Z38FPO_SP8OA3lA1kCKL_xj2rD1IQtRPiwZ39cX3HLyCnUeUsmOVKKcLb7GOcxqYJp3OIhxR07vAVcXbrU1oB_RHlOeUvBBSqRHfBxlHEMNzepTU8ZwDvKShj-fdr-VdUR6oJY3LS5xipP0sX5ODHihC0_rKYcEalQv7jVtunlZUzNp0fuocDCoOUETsuQCYmShkg4EXeuQf5x-ZRyhQDE288IyjtG6ZhvcJe7fGEHvW22ODU54ifQIQ0cM12YriVYurl-If7TF1ewx53hpTHRYy1wXZi7LP98YQnhaLSM759CYJMgVm1qRbg",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
