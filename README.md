@@ -11,7 +11,7 @@ This application will allow creating/removing/updating/fetching product cataloug
 
 * `GetTodos` -  return all product for a current user. A user id can be extracted from a JWT token that is sent by the frontend
 
-* `CreateTodo` -  create a new product catalogue entry by a current user
+* `CreateTodo` -  create a new product catalogue entry by a current user. Whenever create an auto description will be attached to the product.
 
 * `UpdateTodo` - update a  product catalogue entry by a current user.
 
